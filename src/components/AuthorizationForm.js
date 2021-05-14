@@ -2,12 +2,12 @@ import {Form, Button} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {withRouter} from "react-router-dom";
+import {setAuthenticated, user} from "../utils/user";
 
 class AuthorizationForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            isAuthenticated: false,
             username: "",
             password: ""
         };
@@ -20,26 +20,28 @@ class AuthorizationForm extends React.Component{
     }
 
     mySubmitHandler = (event) => {
-        this.isAuthenticated = true
-        if(this.isAuthenticated){
-            this.props.history.push('/posts')
-        }
-        //TODO send post request
-        // fetch(`url`, {
-        //         method: 'POST',
-        //         headers: {
-        //           'Accept': 'application/json',
-        //           'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify(this.state)
-        //     })
-        //     .then((response) => response.json())
-        //     .then((data) => {
-        //         //TODO redirect or 404
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
+        event.preventDefault();
+        fetch(`http://localhost:3000/login`, {
+                method: 'POST',
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.state)
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if('error' in data){
+                    alert('Wrong password! Try again')
+                } else {
+                    setAuthenticated(true);
+                    this.props.history.push('/posts');
+                }
+            })
+            .catch((error) => {
+
+                console.log(error);
+            });
     }
 
     render () {

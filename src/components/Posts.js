@@ -3,6 +3,7 @@ import '../App.css';
 import React from 'react';
 import {Post} from './Post'
 import {Link} from "react-router-dom";
+import {isAuthenticated} from "../utils/user";
 
 export class SearchField extends React.Component{
     render() {
@@ -55,6 +56,7 @@ export class Posts extends React.Component{
             title = <h3>All posts</h3>
         }
         return(
+            isAuthenticated() ?
             <>
                 <div className="flex-div">
                     {title}
@@ -82,7 +84,7 @@ export class Posts extends React.Component{
                     </div>
                 </div>
 
-            </>
+            </> : <h1>Not authenticated</h1>
         )
     }
 }
