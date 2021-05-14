@@ -2,7 +2,7 @@ import {Form, Button} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {withRouter} from "react-router-dom";
-import {setAuthenticated, user} from "../utils/user";
+import {getUser, setAuthenticated, setUser, user} from "../utils/user";
 
 class AuthorizationForm extends React.Component{
     constructor(props) {
@@ -35,6 +35,8 @@ class AuthorizationForm extends React.Component{
                     alert('Wrong password! Try again')
                 } else {
                     setAuthenticated(true);
+                    setUser(data['id'], data['username'])
+                    console.log(getUser())
                     this.props.history.push('/posts');
                 }
             })

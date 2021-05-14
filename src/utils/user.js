@@ -12,4 +12,13 @@ function isAuthenticated(){
     return authenticated;
 }
 
-export { setAuthenticated, isAuthenticated };
+function setUser(id, username){
+    user.id = id;
+    user.username = username;
+}
+
+function getUser(){
+    return user
+}
+
+export { setAuthenticated, isAuthenticated, setUser, getUser };
