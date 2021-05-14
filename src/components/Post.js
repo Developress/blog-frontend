@@ -1,8 +1,10 @@
 import '../App.css';
 import {Button, Card, Form} from 'react-bootstrap';
 import React from 'react';
+import {useParams} from 'react-dom'
 
 export function Post({title, author, created_at, category, text}){
+    let id = 5;
     return (
         <Card style={{width: '18rem'}}>
             <Card.Body>
@@ -11,7 +13,8 @@ export function Post({title, author, created_at, category, text}){
                 <Card.Subtitle className="small-text text-left mb-2 text-muted">{`Created by ${author} at ${created_at}`}</Card.Subtitle>
                 <Card.Subtitle className="small-text text-left mb-2 text-muted">{`Category: ${category}`}</Card.Subtitle>
                 <Card.Text max_ className="text-truncate text-left">{text}</Card.Text>
-                <Card.Link href="#">View Post</Card.Link>
+                <Card.Link href={`/posts/${id}/edit`}>Edit post</Card.Link>
+                <Card.Link href={`/posts/${id}/delete`}>Delete post</Card.Link>
             </Card.Body>
         </Card>
     )
@@ -55,10 +58,11 @@ export class PostForm extends React.Component{
     }
 
     render () {
+        const {id} = this.props.match ? this.props.match.params : {undefined};
         return (
             <>
                 <div className="flex-div">
-                    <h1>Create post</h1>
+                    <h1>{id ? `Edit post with id ${id}`: "Create post"}</h1>
                 </div>
                 <div className="flex-div">
                     <Form onSubmit={this.mySubmitHandler}>

@@ -20,6 +20,8 @@ class App extends React.Component {
                   <Route history={history} path='/login'><AuthorizationForm/> </Route>
                   <Route history={history} exact path='/posts'><Posts/></Route>
                   <Route history={history} exact path='/posts/new'><PostForm/></Route>
+                  <Route history={history} exact path='/posts/:id/edit'
+                         render={({match}) => <PostForm key={this.props.location.key} match={match}/>}/>
                   <Redirect from='/' to='/login' exact/>
               </Switch>
           </div>
