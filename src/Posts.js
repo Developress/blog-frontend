@@ -2,6 +2,7 @@ import {Button, CardColumns, Form} from 'react-bootstrap'
 import './App.css';
 import React from 'react';
 import {Post} from './Post'
+import {Link} from "react-router-dom";
 
 export class SearchField extends React.Component{
     render() {
@@ -37,6 +38,7 @@ export class Categories extends React.Component{
         )
     }
 }
+
 export class Posts extends React.Component{
     constructor(props) {
         super(props);
@@ -57,7 +59,7 @@ export class Posts extends React.Component{
                 <div className="flex-div">
                     {title}
                 </div>
-                <Button className="mt-3" variant="primary" type="submit">+ New post</Button>
+                <Link className="mt-3 btn btn-primary" to="/posts/new">+ New post</Link>
                 <SearchField/>
                 <div className="d-flex">
                     <div className="align-self-lg-start m-lg-5">

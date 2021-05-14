@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css';
 import AuthorizationForm from './AuthorizationForm'
 import {Posts} from './Posts';
+import {PostForm} from './Post';
 import {
     Route,
     Switch,
@@ -17,7 +18,8 @@ class App extends React.Component {
           <div className="App">
               <Switch>
                   <Route history={history} path='/login'><AuthorizationForm/> </Route>
-                  <Route history={history} path='/posts'><Posts/></Route>
+                  <Route history={history} exact path='/posts'><Posts/></Route>
+                  <Route history={history} exact path='/posts/new'><PostForm/></Route>
                   <Redirect from='/' to='/login' exact/>
               </Switch>
           </div>

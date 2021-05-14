@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 
-const history = createBrowserHistory()
+export const history = createBrowserHistory()
 
 ReactDOM.render(
     <BrowserRouter history={history}>
