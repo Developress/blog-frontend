@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.css';
+import '../App.css';
 import AuthorizationForm from './AuthorizationForm'
 import {Posts} from './Posts';
 import {PostForm} from './Post';
@@ -8,7 +8,7 @@ import {
     Switch,
     Redirect,
     withRouter
-  } from "react-router-dom"
+} from "react-router-dom"
 
 class App extends React.Component {
   render() {

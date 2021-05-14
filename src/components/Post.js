@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import {Button, Card, Form} from 'react-bootstrap';
 import React from 'react';
 

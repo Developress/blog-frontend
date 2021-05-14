@@ -1,5 +1,5 @@
 import {Button, CardColumns, Form} from 'react-bootstrap'
-import './App.css';
+import '../App.css';
 import React from 'react';
 import {Post} from './Post'
 import {Link} from "react-router-dom";

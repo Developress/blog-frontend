@@ -1,7 +1,7 @@
 import {Form, Button} from 'react-bootstrap'
-import './App.css';
+import '../App.css';
 import React from 'react';
-import {Redirect, withRouter} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 
 class AuthorizationForm extends React.Component{
     constructor(props) {
