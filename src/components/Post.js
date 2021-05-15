@@ -26,30 +26,32 @@ export function Post({post}){
 class PostForm extends React.Component{
     constructor(props) {
         super(props);
+        const user = getUser();
+        const categories = getCategories();
         this.state = {
             title: "",
-            user_id: getUser().id,
-            category_id: getCategories()[0].id,
+            user_id: user ? user.id : "",
+            category_id: categories ? categories[0].id : "",
             text: "",
             promiseIsResolved: false
         }
     }
 
     componentDidMount() {
-        if(this.props.match && !this.state.promiseIsResolved){
-            const {id} = this.props.match.params;
+        const {id} = this.props.match.params;
+        if (id) {
             retrievePost(id).then((post) => {
-            this.post = post;
-            console.log(this.post);
-            this.setState({
-                id: post.id,
-                title: post.title,
-                category_id: post.category_id,
-                user_id: post.user_id,
-                text: post.text,
-                promiseIsResolved: true
-            });
-        })
+                this.post = post;
+                console.log(this.post);
+                this.setState({
+                    id: post.id,
+                    title: post.title,
+                    category_id: post.category_id,
+                    user_id: post.user_id,
+                    text: post.text,
+                    promiseIsResolved: true
+                });
+            })
         }
     }
 
