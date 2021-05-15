@@ -1,10 +1,13 @@
-import {Button, CardColumns, Form} from 'react-bootstrap'
+import {Button, CardColumns, CardDeck, Form} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {Post} from './Post'
 import {Link} from "react-router-dom";
 import {getUser} from "../utils/user";
 import {getCategories, retrieveCategories} from "../utils/categories";
+import {retrievePosts} from "../utils/posts";
+import {getReadableDatetime} from "../utils/date";
+
 
 export class SearchField extends React.Component{
     render() {
@@ -46,6 +49,17 @@ export class Posts extends React.Component{
         super(props);
         this.title_beginning = props.title
         this.category_to_filter = props.category
+        this.state = {
+            promiseIsResolved: false
+        }
+    }
+
+    componentDidMount() {
+        retrievePosts().then((posts) => {
+            this.posts = posts;
+            console.log(this.posts);
+            this.setState({promiseIsResolved: true});
+        })
     }
 
     render() {
@@ -73,16 +87,13 @@ export class Posts extends React.Component{
 
                     <div className="flex-div">
                         <CardColumns>
-                            <Post title="First post" author="Olena" category="1" created_at="1"
-                                  text="This is first post"/>
-                            <Post title="Second post" author="Olena" category="1" created_at="1"
-                                  text="This is second post"/>
-                            <Post title="Third post" author="Olena" category="1" created_at="1"
-                                  text="This is third post"/>
-                            <Post title="Fourth post" author="Olena" category="1" created_at="1"
-                                  text="This is fourth post"/>
-                            <Post title="Fifth post" author="Olena" category="1" created_at="1"
-                                  text="This is fifth post"/>
+                            {
+                                this.state.promiseIsResolved ?
+                                this.posts.map((post) => <Post title={post.title} author={post.username}
+                                                               category={post.category}
+                                                               created_at={getReadableDatetime(post.created_at)}
+                                                               text={post.text}/>) : ''
+                            }
                         </CardColumns>
                     </div>
                 </div>
