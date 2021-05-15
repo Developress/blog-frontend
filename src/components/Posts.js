@@ -89,10 +89,7 @@ export class Posts extends React.Component{
                         <CardColumns>
                             {
                                 this.state.promiseIsResolved ?
-                                this.posts.map((post) => <Post title={post.title} author={post.username}
-                                                               category={post.category}
-                                                               created_at={getReadableDatetime(post.created_at)}
-                                                               text={post.text}/>) : ''
+                                this.posts.map((post) => <Post post={post}/>) : ''
                             }
                         </CardColumns>
                     </div>
