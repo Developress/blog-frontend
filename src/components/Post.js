@@ -3,8 +3,8 @@ import {Button, Card, Form} from 'react-bootstrap';
 import React from 'react';
 import {getUser} from "../utils/user";
 import {getCategories} from "../utils/categories";
-import {withRouter} from "react-router-dom";
-import {retrievePost} from "../utils/posts";
+import {Redirect, withRouter} from "react-router-dom";
+import {deletePost, retrievePost} from "../utils/posts";
 import {getReadableDatetime} from "../utils/date";
 
 export function Post({post}){
@@ -17,7 +17,7 @@ export function Post({post}){
                 <Card.Subtitle className="small-text text-left mb-2 text-muted">{`Category: ${post.category}`}</Card.Subtitle>
                 <Card.Text max_ className="text-truncate text-left">{post.text}</Card.Text>
                 <Card.Link href={`/posts/${post.id}/edit`}>Edit post</Card.Link>
-                <Card.Link href={`/posts/${post.id}/delete`}>Delete post</Card.Link>
+                <Card.Link href={`/posts/${post.id}/${post.user_id}`}>Delete post</Card.Link>
             </Card.Body>
         </Card>
     )
@@ -145,4 +145,30 @@ function CategoriesList({value, onChangeHandler}){
     )
 }
 
+class PostDelete extends React.Component {
+    render() {
+        const user = getUser();
+        const {id, user_id} = this.props.match.params;
+        console.log(user, user.authenticated, user.id, user_id)
+        if (user && user.authenticated && user.id == user_id) {
+            let shouldDelete = window.confirm('Do you really want to delete this post?');
+            if (shouldDelete) {
+                deletePost(id);
+                return <Redirect to='/posts'/>
+            }
+            return (
+                <div className='container'>
+                </div>
+            )
+        } else {
+            return (
+                <h1>Not authenticated</h1>
+            )
+        }
+    }
+}
+
+withRouter(PostDelete);
+
 export default withRouter(PostForm);
+export {PostDelete};

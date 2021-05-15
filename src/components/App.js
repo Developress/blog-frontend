@@ -2,7 +2,7 @@ import React from 'react'
 import '../App.css';
 import AuthorizationForm from './LoginForm'
 import {Posts} from './Posts';
-import PostForm from './Post';
+import PostForm, {PostDelete} from './Post';
 import {
     Route,
     Switch,
@@ -22,6 +22,8 @@ class App extends React.Component {
                   <Route history={history} exact path='/posts/new'><PostForm/></Route>
                   <Route history={history} exact path='/posts/:id/edit'
                          render={({match}) => <PostForm key={this.props.location.key} match={match}/>}/>
+                  <Route history={history} exact path='/posts/:id/:user_id'
+                         render={({match}) => <PostDelete key={this.props.location.key} match={match}/>}/>
                   <Redirect from='/' to='/login' exact/>
               </Switch>
           </div>

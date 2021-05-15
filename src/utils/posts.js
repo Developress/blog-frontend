@@ -20,4 +20,21 @@ async function retrievePost(id){
     return await response.json();
 }
 
-export {retrievePosts, retrievePost}
+function deletePost(id){
+    fetch(`http://localhost:3000/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+        .then((response) => response.json())
+        .then((data) => {
+
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+}
+
+export {retrievePosts, retrievePost, deletePost}
