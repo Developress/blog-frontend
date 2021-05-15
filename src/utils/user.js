@@ -1,24 +1,9 @@
-let authenticated = false;
-export let user = {
-    "id": "",
-    "username": ""
-}
-
-function setAuthenticated(value) {
-  authenticated = value;
-}
-
-function isAuthenticated(){
-    return authenticated;
-}
-
-function setUser(id, username){
-    user.id = id;
-    user.username = username;
+function setUser(user){
+    localStorage.setItem('user', JSON.stringify(user))
 }
 
 function getUser(){
-    return user
+    return JSON.parse(localStorage.getItem('user'))
 }
 
-export { setAuthenticated, isAuthenticated, setUser, getUser };
+export {setUser, getUser}

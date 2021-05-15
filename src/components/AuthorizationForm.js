@@ -2,14 +2,15 @@ import {Form, Button} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {withRouter} from "react-router-dom";
-import {getUser, setAuthenticated, setUser, user} from "../utils/user";
+import {setUser} from "../utils/user";
+import {getCategories, retrieveCategories} from "../utils/categories";
 
 class AuthorizationForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            password: ""
+            username: '',
+            password: ''
         };
     }
 
@@ -33,15 +34,21 @@ class AuthorizationForm extends React.Component{
             .then((data) => {
                 if('error' in data){
                     alert('Wrong password! Try again')
-                } else {
-                    setAuthenticated(true);
-                    setUser(data['id'], data['username'])
-                    console.log(getUser())
+                } else if('username' in data) {
+                    setUser({
+                        authenticated: true,
+                        id: data['id'],
+                        username: data['username']
+                    });
+                    retrieveCategories();
                     this.props.history.push('/posts');
+                } else {
+                    return (
+                        alert('Not authenticated!')
+                    )
                 }
             })
             .catch((error) => {
-
                 console.log(error);
             });
     }
@@ -70,7 +77,6 @@ class AuthorizationForm extends React.Component{
                     </Form>
                 </div>
             </>
-
         )
     }
 }

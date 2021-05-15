@@ -3,7 +3,8 @@ import '../App.css';
 import React from 'react';
 import {Post} from './Post'
 import {Link} from "react-router-dom";
-import {isAuthenticated} from "../utils/user";
+import {getUser} from "../utils/user";
+import {getCategories} from "../utils/categories";
 
 export class SearchField extends React.Component{
     render() {
@@ -23,13 +24,12 @@ export class SearchField extends React.Component{
 
 export class Categories extends React.Component{
     render() {
+        const categories = getCategories();
         return (
             <div className="flex-div text-md-left">
                 <Form>
                     <Form.Label className="middle-text">Category</Form.Label>
-                    <Form.Check type="checkbox" label="General" name="category" value="1"/>
-                    <Form.Check type="checkbox" label="Science" name="category" value="2"/>
-                    <Form.Check type="checkbox" label="Tech" name="category" value="3"/>
+                    {categories.map(category =>  <Form.Check type="checkbox" label={category.name} name="category" value={category.id}/>)}
                     <div className="flex-div">
                         <Button variant="primary" type="submit">Filter</Button>
                     </div>
@@ -46,17 +46,18 @@ export class Posts extends React.Component{
         this.title_beginning = props.title
         this.category_to_filter = props.category
     }
-    render(){
+
+    render() {
+        const user = getUser();
         let title = ""
-        if (this.title_beginning !== undefined){
+        if (this.title_beginning !== undefined) {
             title = <h3>{`Searching post starting with ${this.title_beginning}`}</h3>
-        } else if (this.category_to_filter !== undefined){
+        } else if (this.category_to_filter !== undefined) {
             title = <h3>{`Post with ${this.category_to_filter} category`}</h3>
         } else {
             title = <h3>All posts</h3>
         }
-        return(
-            isAuthenticated() ?
+        return (
             <>
                 <div className="flex-div">
                     {title}
@@ -83,8 +84,7 @@ export class Posts extends React.Component{
                         </CardColumns>
                     </div>
                 </div>
-
-            </> : <h1>Not authenticated</h1>
+            </>
         )
     }
 }
