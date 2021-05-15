@@ -2,20 +2,51 @@ import {Button, CardColumns, CardDeck, Form} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {Post} from './Post'
-import {Link, withRouter} from "react-router-dom";
-import {getUser, setUser} from "../utils/user";
-import {getCategories, retrieveCategories} from "../utils/categories";
+import {Link} from "react-router-dom";
+import {getUser} from "../utils/user";
+import {getCategories} from "../utils/categories";
 import {retrievePosts} from "../utils/posts";
-import {getReadableDatetime} from "../utils/date";
 
 
 export class SearchField extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            search: ''
+        }
+    }
+
+    myChangeHandler = (event) => {
+        let name = event.target.name;
+        let value = event.target.value;
+        this.setState({[name]: value})
+    }
+
+    mySubmitHandler = (event) => {
+        event.preventDefault();
+        fetch(`http://localhost:3000/posts?title=${this.state.search}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                this.props.updatePosts(`Searching posts starting with ${this.state.search}`, data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
     render() {
         return (
             <div className="flex-div">
-                <Form inline>
+                <Form inline onSubmit={this.mySubmitHandler}>
                     <Form.Group>
-                        <Form.Control name="search" type="search"
+                        <Form.Control name="search" type="search" onChange={this.myChangeHandler}
                                       placeholder="Enter the title of the post to search"/>
                         <Button variant="primary" type="submit">Search</Button>
                     </Form.Group>
@@ -42,7 +73,6 @@ export class Categories extends React.Component {
         }else{
             this.state.categories_ids.splice(this.state.categories_ids.indexOf(value), 1);
         }
-
     }
 
     mySubmitHandler = (event) =>{
@@ -116,7 +146,7 @@ export class Posts extends React.Component{
                    <h1>{this.state.title}</h1>
                 </div>
                 <Link className="mt-3 btn btn-primary" to="/posts/new">+ New post</Link>
-                <SearchField/>
+                <SearchField updatePosts={this.updatePosts}/>
                 <div className="d-flex">
                     <div className="align-self-lg-start m-lg-5">
                         <Categories updatePosts={this.updatePosts}/>
