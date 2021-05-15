@@ -2,8 +2,8 @@ import {Button, CardColumns, CardDeck, Form} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
 import {Post} from './Post'
-import {Link} from "react-router-dom";
-import {getUser} from "../utils/user";
+import {Link, withRouter} from "react-router-dom";
+import {getUser, setUser} from "../utils/user";
 import {getCategories, retrieveCategories} from "../utils/categories";
 import {retrievePosts} from "../utils/posts";
 import {getReadableDatetime} from "../utils/date";
@@ -25,15 +25,54 @@ export class SearchField extends React.Component{
     }
 }
 
-export class Categories extends React.Component{
+export class Categories extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            categories_ids: []
+        }
+    }
+
+    myChangeHandler = (event) => {
+        let target = event.target;
+        let value = event.target.value;
+
+        if(target.checked){
+            this.state.categories_ids.push(value);
+        }else{
+            this.state.categories_ids.splice(this.state.categories_ids.indexOf(value), 1);
+        }
+
+    }
+
+    mySubmitHandler = (event) =>{
+        event.preventDefault();
+        fetch(`http://localhost:3000/posts/filter`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                this.props.updatePosts('Filtering posts by categories', data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
     render() {
         const categories = getCategories();
         console.log(categories);
         return (
             <div className="flex-div text-md-left">
-                <Form>
+                <Form onSubmit={this.mySubmitHandler}>
                     <Form.Label className="middle-text">Category</Form.Label>
-                    {categories.map(category =>  <Form.Check type="checkbox" label={category.name} name="category" value={category.id}/>)}
+                    {categories.map(category =>  <Form.Check type="checkbox" label={category.name} name="category" value={category.id}
+                    onChange={this.myChangeHandler}/>)}
                     <div className="flex-div">
                         <Button variant="primary" type="submit">Filter</Button>
                     </div>
@@ -47,49 +86,47 @@ export class Categories extends React.Component{
 export class Posts extends React.Component{
     constructor(props) {
         super(props);
-        this.title_beginning = props.title
-        this.category_to_filter = props.category
         this.state = {
-            promiseIsResolved: false
+            title: 'All posts',
+            promiseIsResolved: false,
+            posts: []
         }
     }
 
+    updatePosts = (title, posts) => {this.setState({
+        title: title,
+        posts: posts
+    })}
+
     componentDidMount() {
         retrievePosts().then((posts) => {
-            this.posts = posts;
-            console.log(this.posts);
-            this.setState({promiseIsResolved: true});
+            this.setState({
+                posts: posts,
+                promiseIsResolved: true
+            });
         })
     }
 
     render() {
         const user = getUser();
-        let title = ""
-        if (this.title_beginning !== undefined) {
-            title = <h3>{`Searching post starting with ${this.title_beginning}`}</h3>
-        } else if (this.category_to_filter !== undefined) {
-            title = <h3>{`Post with ${this.category_to_filter} category`}</h3>
-        } else {
-            title = <h3>All posts</h3>
-        }
         return (
             user && user.authenticated ?
             <>
                 <div className="flex-div">
-                    {title}
+                   <h1>{this.state.title}</h1>
                 </div>
                 <Link className="mt-3 btn btn-primary" to="/posts/new">+ New post</Link>
                 <SearchField/>
                 <div className="d-flex">
                     <div className="align-self-lg-start m-lg-5">
-                        <Categories/>
+                        <Categories updatePosts={this.updatePosts}/>
                     </div>
 
                     <div className="flex-div">
                         <CardColumns>
                             {
                                 this.state.promiseIsResolved ?
-                                this.posts.map((post) => <Post post={post}/>) : ''
+                                this.state.posts.map((post) => <Post post={post}/>) : ''
                             }
                         </CardColumns>
                     </div>
