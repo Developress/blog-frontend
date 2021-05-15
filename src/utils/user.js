@@ -1,9 +1,9 @@
 function setUser(user){
-    localStorage.setItem('user', JSON.stringify(user))
+    sessionStorage.setItem('user', JSON.stringify(user))
 }
 
 function getUser(){
-    return JSON.parse(localStorage.getItem('user'))
+    return JSON.parse(sessionStorage.getItem('user'))
 }
 
 export {setUser, getUser}

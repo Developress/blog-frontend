@@ -40,8 +40,7 @@ class AuthorizationForm extends React.Component{
                         id: data['id'],
                         username: data['username']
                     });
-                    retrieveCategories();
-                    this.props.history.push('/posts');
+                    retrieveCategories().then(r => this.props.history.push('/posts'));
                 } else {
                     return (
                         alert('Not authenticated!')

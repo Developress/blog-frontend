@@ -4,7 +4,7 @@ import React from 'react';
 import {Post} from './Post'
 import {Link} from "react-router-dom";
 import {getUser} from "../utils/user";
-import {getCategories} from "../utils/categories";
+import {getCategories, retrieveCategories} from "../utils/categories";
 
 export class SearchField extends React.Component{
     render() {
@@ -25,6 +25,7 @@ export class SearchField extends React.Component{
 export class Categories extends React.Component{
     render() {
         const categories = getCategories();
+        console.log(categories);
         return (
             <div className="flex-div text-md-left">
                 <Form>
@@ -58,6 +59,7 @@ export class Posts extends React.Component{
             title = <h3>All posts</h3>
         }
         return (
+            user && user.authenticated ?
             <>
                 <div className="flex-div">
                     {title}
@@ -84,7 +86,7 @@ export class Posts extends React.Component{
                         </CardColumns>
                     </div>
                 </div>
-            </>
+            </>: <h1>Not authenticated</h1>
         )
     }
 }

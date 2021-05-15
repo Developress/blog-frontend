@@ -1,9 +1,9 @@
 function getCategories(){
-    return JSON.parse(localStorage.getItem('categories'));
+    return JSON.parse(sessionStorage.getItem('categories'));
 }
 
-function retrieveCategories(){
-    fetch(`http://localhost:3000/categories`, {
+async function retrieveCategories(){
+    await fetch(`http://localhost:3000/categories`, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -12,7 +12,7 @@ function retrieveCategories(){
     })
         .then((response) => response.json())
         .then((data) => {
-            localStorage.setItem('categories', JSON.stringify(data));
+            sessionStorage.setItem('categories', JSON.stringify(data));
         })
         .catch((error) => {
             console.log(error);
