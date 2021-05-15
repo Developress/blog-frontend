@@ -2,6 +2,8 @@ import '../App.css';
 import {Button, Card, Form} from 'react-bootstrap';
 import React from 'react';
 import {getUser} from "../utils/user";
+import {getCategories} from "../utils/categories";
+import {Redirect, withRouter} from "react-router-dom";
 
 export function Post({title, author, created_at, category, text}){
     let id = 5;
@@ -20,15 +22,14 @@ export function Post({title, author, created_at, category, text}){
     )
 }
 
-export class PostForm extends React.Component{
+class PostForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             title: "",
-            author: "",
-            category: "",
-            text: "",
-            image: ""
+            user_id: getUser().id,
+            category_id: getCategories()[0].id,
+            text: ""
         }
     }
 
@@ -36,9 +37,11 @@ export class PostForm extends React.Component{
         let name = event.target.name;
         let value = event.target.value;
         this.setState({[name]: value})
+        console.log(this.state)
     }
 
     mySubmitHandler = (event) => {
+        console.log(this.state)
         event.preventDefault();
         fetch(`http://localhost:3000/posts`, {
                 method: 'POST',
@@ -50,11 +53,8 @@ export class PostForm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-                if('error' in data){
-                    alert('Wrong password! Try again')
-                } else {
-                    this.props.history.push('/posts');
-                }
+                alert('Post created!')
+                this.props.history.push('/posts')
             })
             .catch((error) => {
 
@@ -77,7 +77,7 @@ export class PostForm extends React.Component{
                             <Form.Control name="title" onChange={this.myChangeHandler} type="text"
                                           placeholder="Enter the title"/>
                         </Form.Group>
-                        <DropDownList onChangeHandler={this.myChangeHandler} />
+                        <CategoriesList onChangeHandler={this.myChangeHandler} />
                         <Form.Group>
                             <Form.Label>Text</Form.Label>
                             <Form.Control name="text" onChange={this.myChangeHandler} as="textarea" />
@@ -92,15 +92,17 @@ export class PostForm extends React.Component{
     }
 }
 
-function DropDownList({onChangeHandler}){
-    const options = ['Choose option', 'Science', 'Tech', 'Sport'];
+function CategoriesList({onChangeHandler}){
+    const categories = getCategories();
 
     return (
         <Form.Group controlId="exampleForm.SelectCustom">
             <Form.Label>Choose category</Form.Label>
-            <Form.Control onChange={onChangeHandler} name="category" as="select" custom>
-                {options.map(option => <option value={option}>{option}</option>)}
+            <Form.Control onChange={onChangeHandler} name="category_id" as="select" custom>
+                {categories.map(category => <option value={category.id}>{category.name}</option>)}
             </Form.Control>
         </Form.Group>
     )
 }
+
+export default withRouter(PostForm);
