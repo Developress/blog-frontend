@@ -1,6 +1,7 @@
 import '../App.css';
 import {Button, Card, Form} from 'react-bootstrap';
 import React from 'react';
+import {getUser} from "../utils/user";
 
 export function Post({title, author, created_at, category, text}){
     let id = 5;
@@ -62,9 +63,10 @@ export class PostForm extends React.Component{
     }
 
     render () {
+        const user = getUser();
         const {id} = this.props.match ? this.props.match.params : {undefined};
         return (
-            <>
+            user && user.authenticated ? <>
                 <div className="flex-div">
                     <h1>{id ? `Edit post with id ${id}`: "Create post"}</h1>
                 </div>
@@ -85,8 +87,7 @@ export class PostForm extends React.Component{
                         </div>
                     </Form>
                 </div>
-            </>
-
+            </> : <h1>Not authenticated</h1>
         )
     }
 }

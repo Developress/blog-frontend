@@ -1,6 +1,6 @@
 import React from 'react'
 import '../App.css';
-import AuthorizationForm from './AuthorizationForm'
+import AuthorizationForm from './LoginForm'
 import {Posts} from './Posts';
 import {PostForm} from './Post';
 import {

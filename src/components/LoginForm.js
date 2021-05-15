@@ -1,11 +1,11 @@
 import {Form, Button} from 'react-bootstrap'
 import '../App.css';
 import React from 'react';
-import {withRouter} from "react-router-dom";
-import {setUser} from "../utils/user";
-import {getCategories, retrieveCategories} from "../utils/categories";
+import {Redirect, withRouter} from "react-router-dom";
+import {getUser, setUser} from "../utils/user";
+import {retrieveCategories} from "../utils/categories";
 
-class AuthorizationForm extends React.Component{
+class LoginForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -53,8 +53,9 @@ class AuthorizationForm extends React.Component{
     }
 
     render () {
+        const user = getUser();
         return (
-            <>
+            !user ? <>
                 <div className="flex-div">
                     <h1>Sign in</h1>
                 </div>
@@ -75,9 +76,9 @@ class AuthorizationForm extends React.Component{
                         </div>
                     </Form>
                 </div>
-            </>
+            </>: <Redirect to='/posts'/>
         )
     }
 }
 
-export default withRouter(AuthorizationForm);
+export default withRouter(LoginForm);
