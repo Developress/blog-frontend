@@ -6,12 +6,13 @@ import {getCategories} from "../utils/categories";
 import {Redirect, withRouter} from "react-router-dom";
 import {deletePost, retrievePost} from "../utils/posts";
 import {getReadableDatetime} from "../utils/date";
+import S3FileUpload from 'react-s3';
 
 export function Post({post}){
     return (
         <Card style={{width: '18rem'}}>
             <Card.Body>
-                <Card.Img variant="top" src="https://www.eea.europa.eu/themes/biodiversity/state-of-nature-in-the-eu/state-of-nature-2020-subtopic/image_large" />
+                <Card.Img variant="top" src={post.image} />
                 <Card.Title>{post.title}</Card.Title>
                 <Card.Subtitle className="small-text text-left mb-2 text-muted">{`Created by ${post.username} at ${getReadableDatetime(post.created_at)}`}</Card.Subtitle>
                 <Card.Subtitle className="small-text text-left mb-2 text-muted">{`Category: ${post.category}`}</Card.Subtitle>
@@ -33,6 +34,7 @@ class PostForm extends React.Component{
             user_id: user ? user.id : "",
             category_id: categories ? categories[0].id : "",
             text: "",
+            image: "",
             promiseIsResolved: false
         }
     }
@@ -49,11 +51,38 @@ class PostForm extends React.Component{
                     category_id: post.category_id,
                     user_id: post.user_id,
                     text: post.text,
+                    image: post.image,
                     promiseIsResolved: true
                 });
             })
         }
     }
+
+    handleFileInputChange = (event) => {
+        this.setState({
+            [event.target.name]: [event.target.files[0]]
+        });
+    };
+
+    handleUpload = async () => {
+        const config = {
+            bucketName: 'super-puk-kaka-cool-bucket',
+            region: 'us-east-1',
+            accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
+            secretAccessKey: process.env.REACT_APP_SECRET_KEY_ID
+        }
+
+        console.log(config.accessKeyId, config.secretAccessKey)
+
+        await S3FileUpload.uploadFile(this.state.image[0], config).then(data => {
+            console.log(data.location)
+            this.setState({
+                    image: data.location
+                }
+            )
+        }
+        ).catch(err => alert(err));
+    };
 
     myChangeHandler = (event) => {
         let name = event.target.name;
@@ -66,39 +95,49 @@ class PostForm extends React.Component{
         console.log(this.state)
         event.preventDefault();
         if(this.post && this.post.id){
-            fetch(`http://localhost:3000/posts/${this.state.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state)
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    alert('Post updated!')
-                    this.props.history.push('/posts')
+            this.handleUpload().then(() => {
+                if (this.state.image === '') {
+                    this.setState({
+                        image: this.post.image
+                    })
+                    console.log(this.state.image);
+                }
+                fetch(`http://localhost:3000/posts/${this.state.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.state)
                 })
-                .catch((error) => {
-                    console.log(error);
-                });
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Post updated!')
+                        this.props.history.push('/posts')
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            })
         } else {
-            fetch(`http://localhost:3000/posts`, {
-                method: 'POST',
-                headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state)
+            this.handleUpload().then(() => {
+                fetch(`http://localhost:3000/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.state)
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        alert('Post created!')
+                        this.props.history.push('/posts')
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
-            .then((response) => response.json())
-            .then((data) => {
-                alert('Post created!')
-                this.props.history.push('/posts')
-            })
-            .catch((error) => {
-                console.log(error);
-            });
         }
     }
 
@@ -122,6 +161,9 @@ class PostForm extends React.Component{
                             <Form.Control name="text" onChange={this.myChangeHandler} as="textarea"
                             value={this.state.text}/>
                         </Form.Group>
+                        <div className="mb-3">
+                            <input type="file" name="image" onChange={this.handleFileInputChange}/>
+                        </div>
                         <div className="flex-div">
                             <Button variant="primary" type="submit">{this.post && this.post.id ? "Update post" : "Create post"}</Button>
                         </div>

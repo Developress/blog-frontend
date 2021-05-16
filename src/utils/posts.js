@@ -20,6 +20,12 @@ async function retrievePost(id){
     return await response.json();
 }
 
+async function getImage(link){
+    let response = await fetch(link);
+    return response.data;
+}
+
+
 function deletePost(id){
     fetch(`http://localhost:3000/posts/${id}`, {
         method: 'DELETE',
@@ -37,4 +43,4 @@ function deletePost(id){
         })
 }
 
-export {retrievePosts, retrievePost, deletePost}
+export {retrievePosts, retrievePost, deletePost, getImage}

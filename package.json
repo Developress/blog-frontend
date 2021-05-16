@@ -6,17 +6,20 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "aws-sdk": "^2.907.0",
     "bootstrap": "^5.0.0",
     "history": "^5.0.0",
     "react": "^17.0.2",
+    "react-aws-s3": "^1.5.0",
     "react-bootstrap": "^1.5.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
+    "react-s3": "^1.3.1",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "set PORT=3001 && react-scripts start",
+    "start": "set PORT=3001 && react-scripts start -r dotenv/config src/index.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -40,6 +43,8 @@
     ]
   },
   "devDependencies": {
-    "dateformat": "^4.5.1"
+    "aws-s3": "^2.0.5",
+    "dateformat": "^4.5.1",
+    "dotenv": "^9.0.2"
   }
 }
