@@ -44,7 +44,6 @@ class PostForm extends React.Component{
         if (id) {
             retrievePost(id).then((post) => {
                 this.post = post;
-                console.log(this.post);
                 this.setState({
                     id: post.id,
                     title: post.title,
@@ -66,16 +65,13 @@ class PostForm extends React.Component{
 
     handleUpload = async () => {
         const config = {
-            bucketName: 'super-puk-kaka-cool-bucket',
+            bucketName: process.env.REACT_APP_BUCKET_NAME,
             region: 'us-east-1',
             accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
             secretAccessKey: process.env.REACT_APP_SECRET_KEY_ID
         }
 
-        console.log(config.accessKeyId, config.secretAccessKey)
-
         await S3FileUpload.uploadFile(this.state.image[0], config).then(data => {
-            console.log(data.location)
             this.setState({
                     image: data.location
                 }
@@ -88,11 +84,9 @@ class PostForm extends React.Component{
         let name = event.target.name;
         let value = event.target.value;
         this.setState({[name]: value})
-        console.log(this.state)
     }
 
     mySubmitHandler = (event) => {
-        console.log(this.state)
         event.preventDefault();
         if(this.post && this.post.id){
             this.handleUpload().then(() => {
@@ -100,7 +94,6 @@ class PostForm extends React.Component{
                     this.setState({
                         image: this.post.image
                     })
-                    console.log(this.state.image);
                 }
                 fetch(`http://localhost:3000/posts/${this.state.id}`, {
                     method: 'PUT',
@@ -191,7 +184,6 @@ class PostDelete extends React.Component {
     render() {
         const user = getUser();
         const {id, user_id} = this.props.match.params;
-        console.log(user, user.authenticated, user.id, user_id)
         if (user && user.authenticated && user.id == user_id) {
             let shouldDelete = window.confirm('Do you really want to delete this post?');
             if (shouldDelete) {

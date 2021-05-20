@@ -33,7 +33,6 @@ export class SearchField extends React.Component{
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 this.props.updatePosts(`Searching posts starting with ${this.state.search}`, data);
             })
             .catch((error) => {
@@ -87,7 +86,6 @@ export class Categories extends React.Component {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data);
                 this.props.updatePosts('Filtering posts by categories', data);
             })
             .catch((error) => {
@@ -96,7 +94,6 @@ export class Categories extends React.Component {
     }
     render() {
         const categories = getCategories();
-        console.log(categories);
         return (
             <div className="flex-div text-md-left">
                 <Form onSubmit={this.mySubmitHandler}>
